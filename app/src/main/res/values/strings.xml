@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Prio</string>
+    <string name="Welcome_textView">Bienvenido a Prio</string>
+
+    <string name="login_button">Iniciar Sesion</string>
+    <string name="register_button">Registrarse</string>
+    <string name="firstName_field">Nombre</string>
+    <string name="lastName_field">Apellido</string>
+    <string name="age_field">Edad</string>
+    <string name="locality_field">localidad</string>
+    <string name="email_field">Correo\nElectronico</string>
+    <string name="password_field">Contraseña</string>
+    <string name="confirm_password_field">Confirmar\nContraseña</string>
+    <string name="logout_button">Cerrar sesion</string>
+
+</resources>
