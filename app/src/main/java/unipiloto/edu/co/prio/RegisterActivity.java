@@ -82,8 +82,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void loadLocalities(Spinner spinner) {
         List<String> localities = dbHelper.getAllLocalities();
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, localities);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, localities);
         spinner.setAdapter(adapter);
     }
 }
