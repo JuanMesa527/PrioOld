@@ -53,13 +53,13 @@ public class RegisterActivity extends AppCompatActivity {
         String conPasswordText = conPassword.getText().toString();
         String localityText = localitySpinner.getSelectedItem().toString();
 
-        int ageInt = Integer.parseInt(ageText);
-        int localityId = dbHelper.getLocalityId(localityText);
-
-        if (firstNameText.isEmpty() || lastNameText.isEmpty() || ageText.isEmpty() || emailText.isEmpty() || passwordText.isEmpty() || conPasswordText.isEmpty()) {
+        if (firstNameText.isEmpty() || lastNameText.isEmpty() || ageText.isEmpty() || emailText.isEmpty() || passwordText.isEmpty() || conPasswordText.isEmpty() || localityText.isEmpty()) {
             Toast.makeText(this, "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        int ageInt = Integer.parseInt(ageText);
+        int localityId = dbHelper.getLocalityId(localityText);
 
         if (!passwordText.equals(conPasswordText)) {
             Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
