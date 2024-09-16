@@ -25,7 +25,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_register);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.titulo), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
@@ -39,7 +39,7 @@ public class RegisterActivity extends AppCompatActivity {
     public void registrar(View view) {
         EditText firstName = findViewById(R.id.firstName);
         EditText lastName = findViewById(R.id.lastName);
-        EditText age = findViewById(R.id.age);
+        EditText age = findViewById(R.id.budget);
         EditText email = findViewById(R.id.email);
         EditText password = findViewById(R.id.password);
         EditText conPassword = findViewById(R.id.conPassword);
@@ -82,8 +82,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void loadLocalities(Spinner spinner) {
         List<String> localities = dbHelper.getAllLocalities();
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, localities);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, localities);
         spinner.setAdapter(adapter);
     }
 }
