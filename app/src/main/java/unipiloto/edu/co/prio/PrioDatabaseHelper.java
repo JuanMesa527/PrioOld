@@ -115,13 +115,14 @@ public class PrioDatabaseHelper  extends SQLiteOpenHelper {
         return true;
     }
 
-    public boolean getLogin(String email, String password) {
+    public String[] getLogin(String email, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM User WHERE EMAIL = "+"'"+email+"'"+" AND PASSWORD = "+"'"+password+"'", null);
-        if (cursor.getCount() > 0) {
-            return true;
+        if (cursor.moveToFirst()) {
+            int roleId = cursor.getColumnIndex("ROLE_ID");
+            return new String[]{"true", cursor.getString(roleId)};
         }
-        return false;
+        return new String[]{null, null};
     }
 
     public List<String> getAllLocalities() {

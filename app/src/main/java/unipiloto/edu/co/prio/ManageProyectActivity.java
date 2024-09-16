@@ -1,6 +1,8 @@
 package unipiloto.edu.co.prio;
 
 import android.os.Bundle;
+import android.view.View;
+import android.content.Intent;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,5 +22,10 @@ public class ManageProyectActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+    }
+
+    public void agregarProyecto(View view) {
+        Intent intent = new Intent(ManageProyectActivity.this, AnadirProyectoActivity.class);
+        startActivity(intent);
     }
 }

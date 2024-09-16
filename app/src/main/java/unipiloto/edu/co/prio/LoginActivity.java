@@ -38,18 +38,29 @@ public class LoginActivity extends AppCompatActivity {
         String emailText = email.getText().toString();
         String passwordText = password.getText().toString();
 
-        boolean isCorrect = dbHelper.getLogin(emailText, passwordText);
-        if (isCorrect) {
+        String[] infoLogin = dbHelper.getLogin(emailText, passwordText);
+        if (infoLogin[0] != null) {
             // Guardar el estado de inicio de sesión en SharedPreferences
             SharedPreferences sharedPreferences = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("isLoggedIn", true);
             editor.putString("userEmail", emailText);
+            editor.putInt("userRole", Integer.parseInt(infoLogin[1]));
             editor.apply();
-
-            Intent loginIntent = new Intent(LoginActivity.this, HomeActivity.class);
-            startActivity(loginIntent);
-            finish(); // Finalizar LoginActivity para que no se pueda volver con el botón atrás
+            if (Integer.parseInt(infoLogin[1]) == 0) {
+                Intent loginIntent = new Intent(LoginActivity.this, HomeActivity.class);
+                startActivity(loginIntent);
+                finish();
+            } else if (Integer.parseInt(infoLogin[1]) == 1) {
+                Intent loginIntent = new Intent(LoginActivity.this, ManageProyectActivity.class);
+                startActivity(loginIntent);
+                finish();
+            } //else {
+                //login del decisor
+//                Intent loginIntent = new Intent(LoginActivity.this, .class);
+//                startActivity(loginIntent);
+//                finish();
+            //}
         } else {
             Toast.makeText(this, "Credenciales incorrectas o usuario inexistente", Toast.LENGTH_SHORT).show();
         }
