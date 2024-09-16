@@ -39,7 +39,7 @@ public class RegisterActivity extends AppCompatActivity {
     public void registrar(View view) {
         EditText firstName = findViewById(R.id.firstName);
         EditText lastName = findViewById(R.id.lastName);
-        EditText age = findViewById(R.id.budget);
+        EditText age = findViewById(R.id.age);
         EditText email = findViewById(R.id.email);
         EditText password = findViewById(R.id.password);
         EditText conPassword = findViewById(R.id.conPassword);

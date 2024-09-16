@@ -12,7 +12,7 @@ import java.util.List;
 public class PrioDatabaseHelper  extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "prio";
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 3;
 
 
     public PrioDatabaseHelper(Context context) {
@@ -68,6 +68,10 @@ public class PrioDatabaseHelper  extends SQLiteOpenHelper {
                 "FOREIGN KEY (PROYECT_ID) REFERENCES Proyect(ID)," +
                 "FOREIGN KEY (VOTE_ID) REFERENCES Vote_type(ID)" + ")");
 
+        db.execSQL("INSERT INTO Category (NAME) VALUES ('Ambiente y Bienestar Animal')");
+        db.execSQL("INSERT INTO Category (NAME) VALUES ('Cultura, Recracion y Deportes')");
+        db.execSQL("INSERT INTO Category (NAME) VALUES ('Derechos de las mujeres')");
+
         db.execSQL("INSERT INTO Locality (NAME, AREA, POPULATION) VALUES ('Usaquen', 65.54, 503767)");
         db.execSQL("INSERT INTO Locality (NAME, AREA, POPULATION) VALUES ('Chapinero', 35.78, 139701)");
         db.execSQL("INSERT INTO Locality (NAME, AREA, POPULATION) VALUES ('Santa Fe', 44.82, 109195)");
@@ -79,6 +83,7 @@ public class PrioDatabaseHelper  extends SQLiteOpenHelper {
                 "Analiza la información en un mapa según la ubicación de los votantes\n" +
                 "Generar estadísticas como el impacto porcentual del proyecto en términos\n" +
                 "del número de participantes y el número de habitantes.')");
+        db.execSQL("INSERT INTO User (FIRST_NAME, LAST_NAME, AGE, EMAIL, PASSWORD, ROLE_ID, LOCALITY_ID) VALUES ('Michael', 'Bohorquez', 20, 'michaelbohorquez2014@gmail.com', '123', 1, 1)");
     }
 
     @Override
@@ -115,6 +120,23 @@ public class PrioDatabaseHelper  extends SQLiteOpenHelper {
         return true;
     }
 
+    public boolean insertProject(String name, String description, double budget, String startDate, String endDate, int categoryId, int localityId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("NAME", name);
+        contentValues.put("DESCRIPTION", description);
+        contentValues.put("BUDGET", budget);
+        contentValues.put("START_DATE", startDate);
+        contentValues.put("END_DATE", endDate);
+        contentValues.put("CATEGORY_ID", categoryId);
+        contentValues.put("LOCALITY_ID", localityId);
+        long result = db.insert("Proyect", null, contentValues);
+        if (result == -1) {
+            return false;
+        }
+        return true;
+    }
+
     public String[] getLogin(String email, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM User WHERE EMAIL = "+"'"+email+"'"+" AND PASSWORD = "+"'"+password+"'", null);
@@ -142,6 +164,29 @@ public class PrioDatabaseHelper  extends SQLiteOpenHelper {
     public int getLocalityId(String localityName) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT ID FROM Locality WHERE NAME = "+"'"+localityName+"'", null);
+        cursor.moveToFirst();
+        int id = cursor.getInt(0);
+        cursor.close();
+        return id;
+    }
+
+    public List<String> getAllCategories() {
+        List<String> categories = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT NAME FROM Category", null);
+        if (cursor.moveToFirst()) {
+            do {
+                categories.add(cursor.getString(0));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return categories;
+    }
+
+    public int getCategoryId(String categoryName) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT ID FROM Category WHERE NAME = "+"'"+categoryName+"'", null);
         cursor.moveToFirst();
         int id = cursor.getInt(0);
         cursor.close();

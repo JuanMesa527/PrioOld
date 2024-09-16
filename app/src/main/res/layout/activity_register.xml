@@ -17,7 +17,7 @@
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/locality_textView"
-        app:layout_constraintTop_toBottomOf="@+id/budget" />
+        app:layout_constraintTop_toBottomOf="@+id/age" />
 
     <TextView
         android:id="@+id/textViewTitleRegister"
@@ -82,7 +82,7 @@
         app:layout_constraintTop_toBottomOf="@id/email" />
 
     <Button
-        android:id="@+id/buttonLogin"
+        android:id="@+id/buttonAgregar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -139,7 +139,7 @@
         app:layout_constraintTop_toTopOf="@+id/password" />
 
     <EditText
-        android:id="@+id/budget"
+        android:id="@+id/age"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -158,11 +158,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="52dp"
         android:text="@string/age_field"
-        app:layout_constraintBottom_toBottomOf="@+id/budget"
+        app:layout_constraintBottom_toBottomOf="@+id/age"
         app:layout_constraintEnd_toEndOf="@+id/email_textView"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/budget" />
+        app:layout_constraintTop_toTopOf="@+id/age" />
 
     <TextView
         android:id="@+id/conPassword_textView"

@@ -18,5 +18,8 @@
     <string name="descripcion_field">Descripcion</string>
     <string name="budget_field">Presupuesto</string>
     <string name="start_date_field">Fecha de inicio</string>
+    <string name="agregar_button">Agregar</string>
+    <string name="end_date_field">Fecha de \n Finalizacion</string>
+    <string name="category">categoria</string>
 
 </resources>
