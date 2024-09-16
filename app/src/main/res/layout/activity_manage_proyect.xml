@@ -5,39 +5,38 @@
     android:id="@+id/titulo"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".ManageProyectActivity">
 
     <TextView
-        android:id="@+id/Welcome_textView"
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="120dp"
-        android:fontFamily="sans-serif"
-        android:text="@string/Welcome_textView"
+        android:layout_marginTop="48dp"
+        android:text="@string/titulo"
         android:textSize="34sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/login_button"
+        android:id="@+id/agregarProyecto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/login_button"
-        android:onClick="login"
+        android:text="@string/agregarProyecto"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        android:onClick="agregarProyecto"
+        app:layout_constraintVertical_bias="0.25" />
 
     <Button
-        android:id="@+id/register_button"
+        android:id="@+id/eliminarProyecto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/register_button"
-        android:onClick="register"
+        android:layout_marginTop="16dp"
+        android:text="@string/eliminarProyecto"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_button" />
-
+        app:layout_constraintTop_toBottomOf="@+id/agregarProyecto" />
 </androidx.constraintlayout.widget.ConstraintLayout>
