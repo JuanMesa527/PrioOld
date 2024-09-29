@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -12,12 +13,23 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
+
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+
+import com.google.android.gms.common.api.Status;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -25,6 +37,7 @@ public class AnadirProyectoActivity extends AppCompatActivity {
     private EditText editTextDate;
     private EditText editTextDate2;
     private PrioDatabaseHelper dbHelper;
+    private String address;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -38,6 +51,31 @@ public class AnadirProyectoActivity extends AppCompatActivity {
         Spinner localitySpinner = findViewById(R.id.locality);
         Spinner categorySpinner = findViewById(R.id.category);
         loadLocalities(localitySpinner, categorySpinner);
+        Places.initialize(getApplicationContext(), BuildConfig.googleApiKey);
+        PlacesClient placesClient = Places.createClient(this);
+        // Initialize the AutocompleteSupportFragment.
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+
+        // Specify the types of place data to return.
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.NAME, Place.Field.LAT_LNG));
+
+        // Set up a PlaceSelectionListener to handle the response.
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            private static final String TAG = "AnadirProyectoActivity";
+            @Override
+            public void onPlaceSelected(@NonNull Place place) {
+                // TODO: Get info about the selected place.
+                address = place.getLatLng().toString();
+                Log.i(TAG, "Place: " +place.getLatLng().toString());
+            }
+
+            @Override
+            public void onError(@NonNull Status status) {
+                // TODO: Handle the error.
+                Log.i(TAG, "An error occurred google api: " + status);
+            }
+        });
 
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -93,6 +131,7 @@ public class AnadirProyectoActivity extends AppCompatActivity {
         EditText end = findViewById(R.id.endTextDate);
         Spinner locality = findViewById(R.id.locality);
         Spinner category = findViewById(R.id.category);
+
         String nameText = name.getText().toString();
         String descriptionText = description.getText().toString();
         String budgetText = budget.getText().toString();
@@ -101,13 +140,14 @@ public class AnadirProyectoActivity extends AppCompatActivity {
         String localityText = locality.getSelectedItem().toString();
         String categoryText = category.getSelectedItem().toString();
 
+
         int localityId = dbHelper.getLocalityId(locality.getSelectedItem().toString());
         int categoryId = dbHelper.getCategoryId(category.getSelectedItem().toString());
-        if (nameText.isEmpty() || descriptionText.isEmpty() || budgetText.isEmpty() || startText.isEmpty() || endText.isEmpty() || categoryText.isEmpty() || localityText.isEmpty()) {
+        if (nameText.isEmpty() || descriptionText.isEmpty() || budgetText.isEmpty() || startText.isEmpty() || endText.isEmpty() || categoryText.isEmpty() || localityText.isEmpty() || address.isEmpty()) {
             Toast.makeText(this, "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show();
             return;
         }
-        boolean insertado = dbHelper.insertProject(nameText, descriptionText,Double.parseDouble(budgetText), startText, endText, categoryId, localityId);
+        boolean insertado = dbHelper.insertProject(nameText, descriptionText,Double.parseDouble(budgetText), startText, endText, categoryId, localityId, address);
         if (insertado) {
             Toast.makeText(this, "Proyecto Agregado", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(AnadirProyectoActivity.this, ManageProyectActivity.class);

@@ -213,6 +213,29 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/locality" />
 
+        <TextView
+            android:id="@+id/direccion_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/direccion_field"
+            app:layout_constraintBottom_toBottomOf="@+id/autocomplete_fragment"
+            app:layout_constraintEnd_toEndOf="@+id/end_date_button"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/autocomplete_fragment" />
+
+        <fragment
+            android:id="@+id/autocomplete_fragment"
+            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/direccion_textView"
+            app:layout_constraintTop_toBottomOf="@+id/locality" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
