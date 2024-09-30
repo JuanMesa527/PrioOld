@@ -139,11 +139,9 @@ public class EditarProyectoActivity extends AppCompatActivity {
         String categoryName = dbHelper.getCategoryName(project.getCategoryId());
         String localityName = dbHelper.getLocalityName(project.getLocalityId());
 
-        // Buscar la posición de ese nombre en el adaptador del Spinner
         int categoryPosition = ((ArrayAdapter<String>) categorySpinner.getAdapter()).getPosition(categoryName);
         int localityPosition = ((ArrayAdapter<String>) localitySpinner.getAdapter()).getPosition(localityName);
 
-        // Establecer la selección del Spinner en esa posición
         categorySpinner.setSelection(categoryPosition);
         localitySpinner.setSelection(localityPosition);
     }
