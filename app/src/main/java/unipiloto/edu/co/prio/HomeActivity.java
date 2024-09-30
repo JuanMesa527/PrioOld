@@ -3,42 +3,61 @@ package unipiloto.edu.co.prio;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
+import java.util.ArrayList;
 
 public class HomeActivity extends AppCompatActivity {
+
+    private PrioDatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home);
-
+        dbHelper = new PrioDatabaseHelper(this);
         SharedPreferences sharedPreferences = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
         boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
-        if (!isLoggedIn) {
-            // Redirigir al LoginActivity si no ha iniciado sesión
-            Intent loginIntent = new Intent(HomeActivity.this, LoginActivity.class);
-            startActivity(loginIntent);
-            finish();
-        } else {
-            // Recuperar el email del usuario
-            String userEmail = sharedPreferences.getString("userEmail", null);
-            TextView textViewEmail = findViewById(R.id.textViewEmail);
-            textViewEmail.setText(userEmail);
-        }
+        ArrayList<Project> projects = dbHelper.getAllProjects();
+        ListView listView = findViewById(R.id.listView);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.titulo), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        ArrayAdapter<Project> listAdapter = new ArrayAdapter<Project>(this, R.layout.card_item, projects) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                if (convertView == null) {
+                    convertView = LayoutInflater.from(getContext()).inflate(R.layout.card_item, parent, false);
+                }
+
+                Project currentItem = getItem(position);
+
+                ImageView logoImageView = convertView.findViewById(R.id.logoImageView);
+                TextView titleTextView = convertView.findViewById(R.id.titleTextView);
+                TextView descriptionTextView = convertView.findViewById(R.id.descriptionTextView);
+
+                logoImageView.setImageResource(currentItem.getLogoResId());
+                titleTextView.setText(currentItem.getTitle());
+                descriptionTextView.setText(currentItem.getDescription());
+
+                convertView.setOnClickListener(v -> {
+                    Intent intent = new Intent(HomeActivity.this, ProjectActivity.class);
+                    intent.putExtra("item", currentItem);
+                    startActivity(intent);
+                });
+                return convertView;
+            }
+        };
+        listView.setAdapter(listAdapter);
+
     }
 
     public void logout(View view) {

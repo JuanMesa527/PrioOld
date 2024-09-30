@@ -12,7 +12,7 @@ import java.util.List;
 public class PrioDatabaseHelper  extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "prio";
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 5;
 
 
     public PrioDatabaseHelper(Context context) {
@@ -44,7 +44,7 @@ public class PrioDatabaseHelper  extends SQLiteOpenHelper {
                 "LOCALITY_ID INTEGER NOT NULL," +
                 "FOREIGN KEY (ROLE_ID) REFERENCES Role(ID)," +
                 "FOREIGN KEY (LOCALITY_ID) REFERENCES Locality(ID)" + ")");
-        db.execSQL("CREATE TABLE Proyect (" +
+        db.execSQL("CREATE TABLE Project (" +
                 "ID INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "NAME TEXT NOT NULL UNIQUE," +
                 "DESCRIPTION TEXT NOT NULL," +
@@ -53,6 +53,7 @@ public class PrioDatabaseHelper  extends SQLiteOpenHelper {
                 "END_DATE TEXT NOT NULL," +
                 "CATEGORY_ID INTEGER NOT NULL," +
                 "LOCALITY_ID INTEGER NOT NULL," +
+                "ADDRESS TEXT NOT NULL," +
                 "FOREIGN KEY (CATEGORY_ID) REFERENCES Category(ID)," +
                 "FOREIGN KEY (LOCALITY_ID) REFERENCES Locality(ID)" + ")");
         db.execSQL("CREATE TABLE Vote_type (" +
@@ -81,9 +82,9 @@ public class PrioDatabaseHelper  extends SQLiteOpenHelper {
                 "agrupadas por zona de la ciudad (localidad)')");
         db.execSQL("INSERT INTO Role (NAME, DESCRIPTION) VALUES ('decisor', 'Consulta los resultados de las votaciones en las diversas zonas.\n" +
                 "Analiza la información en un mapa según la ubicación de los votantes\n" +
-                "Generar estadísticas como el impacto porcentual del proyecto en términos\n" +
+                "Generar estadísticas como el impacto porcentual del Project en términos\n" +
                 "del número de participantes y el número de habitantes.')");
-        db.execSQL("INSERT INTO User (FIRST_NAME, LAST_NAME, AGE, EMAIL, PASSWORD, ROLE_ID, LOCALITY_ID) VALUES ('Michael', 'Bohorquez', 20, 'michaelbohorquez2014@gmail.com', '123', 1, 1)");
+        db.execSQL("INSERT INTO User (ID,FIRST_NAME, LAST_NAME, AGE, EMAIL, PASSWORD, ROLE_ID, LOCALITY_ID) VALUES (1,'pruebas', 'pruebas', 20, 'pruebas@gmail.com', '123', 1, 1)");
     }
 
     @Override
@@ -103,9 +104,10 @@ public class PrioDatabaseHelper  extends SQLiteOpenHelper {
         onUpgrade(db, 1, 1);
     }
 
-    public boolean insertUser(String firstName, String lastName, int age, String email, String password, int roleId, int localityId) {
+    public boolean insertUser(int id, String firstName, String lastName, int age, String email, String password, int roleId, int localityId) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
+        contentValues.put("ID", id);
         contentValues.put("FIRST_NAME", firstName);
         contentValues.put("LAST_NAME", lastName);
         contentValues.put("AGE", age);
@@ -120,7 +122,7 @@ public class PrioDatabaseHelper  extends SQLiteOpenHelper {
         return true;
     }
 
-    public boolean insertProject(String name, String description, double budget, String startDate, String endDate, int categoryId, int localityId) {
+    public boolean insertProject(String name, String description, double budget, String startDate, String endDate, int categoryId, int localityId, String address) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("NAME", name);
@@ -130,8 +132,18 @@ public class PrioDatabaseHelper  extends SQLiteOpenHelper {
         contentValues.put("END_DATE", endDate);
         contentValues.put("CATEGORY_ID", categoryId);
         contentValues.put("LOCALITY_ID", localityId);
-        long result = db.insert("Proyect", null, contentValues);
-        if (result == -1) {
+        contentValues.put("ADDRESS", address);
+        long result = db.insert("Project", null, contentValues);
+        if (result == 0) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean deleteProject(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        long result = db.delete("Project", "ID = "+id, null);
+        if (result == 0) {
             return false;
         }
         return true;
@@ -160,6 +172,61 @@ public class PrioDatabaseHelper  extends SQLiteOpenHelper {
         db.close();
         return localities;
     }
+    public List<String> getAllNameProjects() {
+        List<String> Projects = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT ID,NAME FROM Project", null);
+        if (cursor.moveToFirst()) {
+            do {
+                Projects.add(cursor.getString(0)+" - "+cursor.getString(1));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return Projects;
+    }
+
+    public boolean updateProject(int id, String name, String description, double budget, String startDate, String endDate, int categoryId, int localityId, String address) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("NAME", name);
+        contentValues.put("DESCRIPTION", description);
+        contentValues.put("BUDGET", budget);
+        contentValues.put("START_DATE", startDate);
+        contentValues.put("END_DATE", endDate);
+        contentValues.put("CATEGORY_ID", categoryId);
+        contentValues.put("LOCALITY_ID", localityId);
+        contentValues.put("ADDRESS", address);
+        long result = db.update("Project", contentValues, "ID = "+id, null);
+        if (result == 0) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isProject(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM Project WHERE ID = "+"'"+id+"'", null);
+        if (cursor.moveToFirst()) {
+            return true;
+        }
+        return false;
+    }
+
+    public ArrayList<Project> getAllProjects() {
+        ArrayList<Project> Projects = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM Project", null);
+        if (cursor.moveToFirst()) {
+            do {
+                Project project = new Project(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getDouble(3), cursor.getString(4), cursor.getString(5), cursor.getInt(6), cursor.getInt(7), cursor.getString(8));
+                Projects.add(project);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return Projects;
+    }
 
     public int getLocalityId(String localityName) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -168,6 +235,15 @@ public class PrioDatabaseHelper  extends SQLiteOpenHelper {
         int id = cursor.getInt(0);
         cursor.close();
         return id;
+    }
+
+    public String getLocalityName(int localityId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT NAME FROM Locality WHERE ID = "+"'"+localityId+"'", null);
+        cursor.moveToFirst();
+        String name = cursor.getString(0);
+        cursor.close();
+        return name;
     }
 
     public List<String> getAllCategories() {
@@ -191,5 +267,25 @@ public class PrioDatabaseHelper  extends SQLiteOpenHelper {
         int id = cursor.getInt(0);
         cursor.close();
         return id;
+    }
+
+    public String getCategoryName(int CategoryId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT NAME FROM Category WHERE ID = "+"'"+CategoryId+"'", null);
+        cursor.moveToFirst();
+        String name = cursor.getString(0);
+        cursor.close();
+        return name;
+    }
+
+    public Project getProjectById(int id){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM Project WHERE ID = "+"'"+id+"'", null);
+        cursor.moveToFirst();
+        Project project = new Project(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getDouble(3), cursor.getString(4), cursor.getString(5), cursor.getInt(6), cursor.getInt(7), cursor.getString(8));
+        cursor.close();
+        db.close();
+        return project;
+
     }
 }

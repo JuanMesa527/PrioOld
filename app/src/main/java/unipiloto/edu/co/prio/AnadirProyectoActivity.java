@@ -65,14 +65,11 @@ public class AnadirProyectoActivity extends AppCompatActivity {
             private static final String TAG = "AnadirProyectoActivity";
             @Override
             public void onPlaceSelected(@NonNull Place place) {
-                // TODO: Get info about the selected place.
                 address = place.getLatLng().toString();
-                Log.i(TAG, "Place: " +place.getLatLng().toString());
             }
 
             @Override
             public void onError(@NonNull Status status) {
-                // TODO: Handle the error.
                 Log.i(TAG, "An error occurred google api: " + status);
             }
         });
@@ -154,7 +151,7 @@ public class AnadirProyectoActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         } else {
-            Toast.makeText(this, "Error al agregar proyecto", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Error al agregar Project", Toast.LENGTH_SHORT).show();
         }
     }
 }

@@ -1,5 +1,6 @@
 package unipiloto.edu.co.prio;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.content.Intent;
@@ -27,5 +28,20 @@ public class ManageProyectActivity extends AppCompatActivity {
     public void agregarProyecto(View view) {
         Intent intent = new Intent(ManageProyectActivity.this, AnadirProyectoActivity.class);
         startActivity(intent);
+    }
+    public void eliminarProyecto(View view) {
+        Intent intent = new Intent(ManageProyectActivity.this, EliminarEditarProyectoActivity.class);
+        startActivity(intent);
+    }
+    public void logout(View view) {
+        SharedPreferences sharedPreferences = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("isLoggedIn", false);
+        editor.remove("userEmail");
+        editor.apply();
+
+        Intent loginIntent = new Intent(ManageProyectActivity.this, MainActivity.class);
+        startActivity(loginIntent);
+        finish();
     }
 }
