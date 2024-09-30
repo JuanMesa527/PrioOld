@@ -135,8 +135,17 @@ public class EditarProyectoActivity extends AppCompatActivity {
         editTextBudget.setText(String.valueOf(project.getBudget()));
         editTextDateEditing.setText(project.getStartDate());
         editTextDateEndEditing.setText(project.getEndDate());
-        categorySpinner.setSelection(project.getCategoryId()-1);
-        localitySpinner.setSelection(project.getLocalityId()-1);
+
+        String categoryName = dbHelper.getCategoryName(project.getCategoryId());
+        String localityName = dbHelper.getLocalityName(project.getLocalityId());
+
+        // Buscar la posición de ese nombre en el adaptador del Spinner
+        int categoryPosition = ((ArrayAdapter<String>) categorySpinner.getAdapter()).getPosition(categoryName);
+        int localityPosition = ((ArrayAdapter<String>) localitySpinner.getAdapter()).getPosition(localityName);
+
+        // Establecer la selección del Spinner en esa posición
+        categorySpinner.setSelection(categoryPosition);
+        localitySpinner.setSelection(localityPosition);
     }
 
     public void openDatePicker(View view) {
