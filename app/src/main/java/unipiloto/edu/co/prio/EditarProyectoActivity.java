@@ -83,10 +83,8 @@ public class EditarProyectoActivity extends AppCompatActivity {
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment_editing);
 
-        // Specify the types of place data to return.
         autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.NAME, Place.Field.LAT_LNG));
 
-        // Set up a PlaceSelectionListener to handle the response.
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             private static final String TAG = "EditarProyectoActivity";
             @Override
@@ -110,6 +108,7 @@ public class EditarProyectoActivity extends AppCompatActivity {
         String endText = editTextDateEndEditing.getText().toString();
         String localityText = localitySpinner.getSelectedItem().toString();
         String categoryText = categorySpinner.getSelectedItem().toString();
+        address = address == null ? project.getAddress() : address;
 
 
         int localityId = dbHelper.getLocalityId(localitySpinner.getSelectedItem().toString());
@@ -152,7 +151,6 @@ public class EditarProyectoActivity extends AppCompatActivity {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
 
-                //Showing the picked value in the textView
                 editTextDateEditing.setText(String.valueOf(day) + "/" + String.valueOf(month+1) + "/" + String.valueOf(year));
 
             }
@@ -166,7 +164,6 @@ public class EditarProyectoActivity extends AppCompatActivity {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
 
-                //Showing the picked value in the textView
                 editTextDateEndEditing.setText(String.valueOf(day) + "/" + String.valueOf(month+1) + "/" + String.valueOf(year));
 
             }
