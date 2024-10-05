@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -48,6 +50,10 @@ public class HomeActivity extends AppCompatActivity {
         Button filterButton = findViewById(R.id.filter_button);
         drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
+        loadMenuItems(); // Cargar los elementos del menú dinámicamente
+
+        // Configurar el listener para los elementos del menú
+
 
         listAdapter = new ArrayAdapter<Project>(this, R.layout.card_item, projects) {
             private List<Project> originalList = new ArrayList<>(projects);
@@ -83,6 +89,8 @@ public class HomeActivity extends AppCompatActivity {
                     Intent intent = new Intent(HomeActivity.this, ProjectActivity.class);
                     intent.putExtra("item", currentItem);
                     startActivity(intent);
+
+
                 });
                 return convertView;
             }
@@ -100,8 +108,18 @@ public class HomeActivity extends AppCompatActivity {
                             List<Project> filteredItems = new ArrayList<>();
                             String filterPattern = constraint.toString().toLowerCase().trim();
                             for (Project item : originalList) {
-                                if (item.getTitle().toLowerCase().contains(filterPattern) ||
-                                        String.valueOf(item.getLocalityId()).contains(filterPattern)) {
+                                if (filterPattern.startsWith("loc ")) {
+                                    int localityId = Integer.parseInt(filterPattern.substring(4));
+                                    if (item.getLocalityId() == localityId) {
+                                        filteredItems.add(item);
+                                    }
+                                } else if (filterPattern.startsWith("cat ")) {
+                                    int categoryId = Integer.parseInt(filterPattern.substring(4));
+                                    if (item.getCategoryId() == categoryId) {
+                                        filteredItems.add(item);
+                                    }
+                                } else
+                                if (item.getTitle().toLowerCase().contains(filterPattern)) {
                                     filteredItems.add(item);
                                 }
                             }
@@ -143,12 +161,44 @@ public class HomeActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                String id = String.valueOf(dbHelper.getLocalityId(item.getTitle().toString()));
-                listAdapter.getFilter().filter(id);
+                if (item.isChecked()) {
+                    item.setChecked(false);
+                    listAdapter.getFilter().filter("");
+                } else {
+                    item.setChecked(true);
+                    String filter = item.getTitle().toString();
+                    if (item.getGroupId() == 1) {
+                        filter = "loc " + dbHelper.getLocalityId(filter);
+                    } else if (item.getGroupId() == 2) {
+                        filter = "cat " + dbHelper.getCategoryId(filter);
+                    }
+                    listAdapter.getFilter().filter(filter);
+                }
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             }
         });
+
+    }
+    private void loadMenuItems() {
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        Menu menu = navigationView.getMenu();
+        menu.clear(); // Limpiar el menú existente
+
+        // Obtener los datos de la base de datos
+        List<String> localities = dbHelper.getAllLocalities(); // Método que debes implementar en tu DBHelper
+        List<String> categories = dbHelper.getAllCategories();
+
+        SubMenu subMenu = menu.addSubMenu(menu.NONE, 1, menu.NONE, "Localidades");
+        for (String locality : localities) {
+            MenuItem menuItem = subMenu.add(menu.NONE, 1, menu.NONE, locality);
+            menuItem.setCheckable(true);// Hacer que el elemento sea un checkbox
+        }
+        SubMenu subMenu2 = menu.addSubMenu(menu.NONE, 2, menu.NONE, "Categorías");
+        for (String category : categories) {
+            MenuItem menuItem = subMenu2.add(menu.NONE, 2, menu.NONE, category);
+            menuItem.setCheckable(true);// Hacer que el elemento sea un checkbox
+        }
 
     }
 
