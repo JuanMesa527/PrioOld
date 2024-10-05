@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_option1"
+        android:title="Santa Fe" />
+    <item
+        android:id="@+id/nav_option2"
+        android:title="Usaquen" />
+    <item
+        android:id="@+id/nav_option3"
+        android:title="Chapinero" />
+</menu>

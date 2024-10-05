@@ -111,8 +111,6 @@ public class Project implements Parcelable {
         return localityId;
     }
 
-
-
     public void setLocalityId(int localityId) {
         this.localityId = localityId;
     }
