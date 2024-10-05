@@ -29,9 +29,12 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class AnadirProyectoActivity extends AppCompatActivity {
     private EditText editTextDate;
@@ -102,10 +105,19 @@ public class AnadirProyectoActivity extends AppCompatActivity {
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-
-                //Showing the picked value in the textView
+                String startText = editTextDate.getText().toString();
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                try {
+                    Date startDate = sdf.parse(startText);
+                    Date endDate = sdf.parse(day + "/" + (month+1) + "/" + year);
+                    if (endDate.before(startDate) || endDate.equals(startDate)) {
+                        Toast.makeText(AnadirProyectoActivity.this, "La fecha de finalización no puede ser antes o igual a la fecha de inicio", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 editTextDate2.setText(String.valueOf(day) + "/" + String.valueOf(month+1) + "/" + String.valueOf(year));
-
             }
         }, (date.getYear()+1900), (date.getMonth()), (date.getDate()));
 
