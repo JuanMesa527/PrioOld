@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Filter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -47,12 +48,10 @@ public class HomeActivity extends AppCompatActivity {
         ArrayList<Project> projects = dbHelper.getAllProjects();
         ListView listView = findViewById(R.id.listView);
         SearchView searchView = findViewById(R.id.busqueda);
-        Button filterButton = findViewById(R.id.filter_button);
+        ImageButton filterButton = findViewById(R.id.filter_button);
         drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
-        loadMenuItems(); // Cargar los elementos del menú dinámicamente
-
-        // Configurar el listener para los elementos del menú
+        loadMenuItems();
 
 
         listAdapter = new ArrayAdapter<Project>(this, R.layout.card_item, projects) {
@@ -167,9 +166,9 @@ public class HomeActivity extends AppCompatActivity {
                 } else {
                     item.setChecked(true);
                     String filter = item.getTitle().toString();
-                    if (item.getGroupId() == 1) {
+                    if (item.getItemId() == 1) {
                         filter = "loc " + dbHelper.getLocalityId(filter);
-                    } else if (item.getGroupId() == 2) {
+                    } else if (item.getItemId() == 2) {
                         filter = "cat " + dbHelper.getCategoryId(filter);
                     }
                     listAdapter.getFilter().filter(filter);
@@ -183,23 +182,21 @@ public class HomeActivity extends AppCompatActivity {
     private void loadMenuItems() {
         NavigationView navigationView = findViewById(R.id.nav_view);
         Menu menu = navigationView.getMenu();
-        menu.clear(); // Limpiar el menú existente
+        menu.clear();
 
-        // Obtener los datos de la base de datos
-        List<String> localities = dbHelper.getAllLocalities(); // Método que debes implementar en tu DBHelper
+        List<String> localities = dbHelper.getAllLocalities();
         List<String> categories = dbHelper.getAllCategories();
 
         SubMenu subMenu = menu.addSubMenu(menu.NONE, 1, menu.NONE, "Localidades");
         for (String locality : localities) {
             MenuItem menuItem = subMenu.add(menu.NONE, 1, menu.NONE, locality);
-            menuItem.setCheckable(true);// Hacer que el elemento sea un checkbox
+            menuItem.setCheckable(true);
         }
         SubMenu subMenu2 = menu.addSubMenu(menu.NONE, 2, menu.NONE, "Categorías");
         for (String category : categories) {
             MenuItem menuItem = subMenu2.add(menu.NONE, 2, menu.NONE, category);
-            menuItem.setCheckable(true);// Hacer que el elemento sea un checkbox
+            menuItem.setCheckable(true);
         }
-
     }
 
     public void logout(View view) {

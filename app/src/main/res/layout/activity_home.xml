@@ -56,20 +56,24 @@
             android:layout_height="57dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="16dp"
             app:layout_constraintEnd_toStartOf="@+id/filter_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textViewTitleRegister" />
 
-        <Button
+        <ImageButton
             android:id="@+id/filter_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginEnd="16dp"
-            android:text="Button"
+            android:background="@null"
+            android:scaleType="fitXY"
             app:layout_constraintBottom_toBottomOf="@+id/busqueda"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/busqueda" />
+            app:layout_constraintTop_toTopOf="@+id/busqueda"
+            app:srcCompat="@drawable/filter_icon" />
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.navigation.NavigationView
