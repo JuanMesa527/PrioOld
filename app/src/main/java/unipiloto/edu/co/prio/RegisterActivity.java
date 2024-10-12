@@ -37,6 +37,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void registrar(View view) {
+        EditText id = findViewById(R.id.id);
         EditText firstName = findViewById(R.id.firstName);
         EditText lastName = findViewById(R.id.lastName);
         EditText age = findViewById(R.id.age);
@@ -45,6 +46,7 @@ public class RegisterActivity extends AppCompatActivity {
         EditText conPassword = findViewById(R.id.conPassword);
         Spinner localitySpinner = findViewById(R.id.locality);
 
+        String idText = id.getText().toString();
         String firstNameText = firstName.getText().toString();
         String lastNameText = lastName.getText().toString();
         String ageText = age.getText().toString();
@@ -53,13 +55,19 @@ public class RegisterActivity extends AppCompatActivity {
         String conPasswordText = conPassword.getText().toString();
         String localityText = localitySpinner.getSelectedItem().toString();
 
-        if (firstNameText.isEmpty() || lastNameText.isEmpty() || ageText.isEmpty() || emailText.isEmpty() || passwordText.isEmpty() || conPasswordText.isEmpty() || localityText.isEmpty()) {
+        if (idText.isEmpty() || firstNameText.isEmpty() || lastNameText.isEmpty() || ageText.isEmpty() || emailText.isEmpty() || passwordText.isEmpty() || conPasswordText.isEmpty() || localityText.isEmpty()) {
             Toast.makeText(this, "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!ValidacionEmail(emailText)) {
+            Toast.makeText(this, "Correo electrónico no válido", Toast.LENGTH_SHORT).show();
             return;
         }
 
         int ageInt = Integer.parseInt(ageText);
         int localityId = dbHelper.getLocalityId(localityText);
+        int idInt = Integer.parseInt(idText);
 
         if (!passwordText.equals(conPasswordText)) {
             Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
@@ -69,15 +77,20 @@ public class RegisterActivity extends AppCompatActivity {
         // Encriptación de la contraseña (opcional)
         // String encryptedPassword = encryptPassword(passwordText);
 
-        boolean insertado = dbHelper.insertUser(firstNameText, lastNameText, ageInt, emailText, passwordText, 0, localityId);
+        boolean insertado = dbHelper.insertUser(idInt, firstNameText, lastNameText, ageInt, emailText, passwordText, 0, localityId);
         if (insertado) {
             Toast.makeText(this, "Usuario registrado", Toast.LENGTH_SHORT).show();
             Intent registerIntent = new Intent(RegisterActivity.this, MainActivity.class);
             startActivity(registerIntent);
             finish();
         } else {
-            Toast.makeText(this, "Error al registrar usuario", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "ERROR: Cedula ya registrada", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private boolean ValidacionEmail(String email) {
+        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+        return email.matches(emailPattern);
     }
 
     private void loadLocalities(Spinner spinner) {
